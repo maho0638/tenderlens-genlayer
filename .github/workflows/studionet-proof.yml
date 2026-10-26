@@ -1,0 +1,47 @@
+name: TenderLens real Studionet end-to-end proof
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type RUN_STUDIONET_TEST to authorize TEST-network writes and deployment'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  studionet-proof:
+    if: ${{ (github.event_name == 'push' && github.event.head_commit.message == 'RUN_ONCE_TENDERLENS_STUDIONET_PROOF') || (github.event_name == 'workflow_dispatch' && inputs.confirmation == 'RUN_STUDIONET_TEST') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install official pinned-compatible test tooling
+        run: python -m pip install -r requirements.txt
+      - name: Static, Direct Mode and GenVM preflight
+        run: |
+          python -m compileall -q contracts tests
+          python -m pytest tests/direct -q
+          genvm-lint check contracts/tender_lens.py
+          genvm-lint typecheck contracts/tender_lens.py
+          genvm-lint schema contracts/tender_lens.py
+      - name: Record precise source identity
+        run: |
+          mkdir -p artifacts
+          echo "COMMIT=${GITHUB_SHA}" | tee artifacts/source-identity.txt
+          sha256sum contracts/tender_lens.py | tee -a artifacts/source-identity.txt
+      - name: Real Studionet deploy, transaction consensus and RPC readback
+        shell: bash
+        run: |
+          set -o pipefail
+          gltest tests/integration/test_studionet.py -v -s --network studionet 2>&1 | tee artifacts/studionet-proof.log
+      - name: Preserve full network proof logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tenderlens-studionet-proof-${{ github.run_id }}
+          path: artifacts/
+          if-no-files-found: warn
