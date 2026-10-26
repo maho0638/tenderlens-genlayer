@@ -1,0 +1,29 @@
+name: TenderLens GenLayer verification
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned testing suite and GenVM linter
+        run: python -m pip install -r requirements.txt
+      - name: Check Python syntax
+        run: python -m compileall -q contracts tests
+      - name: GenLayer Direct Mode tests and validator checks
+        run: python -m pytest tests/direct -q
+      - name: GenVM contract lint and SDK checks
+        run: genvm-lint check contracts/tender_lens.py
+      - name: GenVM typecheck
+        run: genvm-lint typecheck contracts/tender_lens.py
+      - name: GenVM contract schema
+        run: genvm-lint schema contracts/tender_lens.py
+      - name: Contract SHA-256
+        run: sha256sum contracts/tender_lens.py
