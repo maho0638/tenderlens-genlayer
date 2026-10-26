@@ -30,18 +30,18 @@ jobs:
           genvm-lint schema contracts/tender_lens.py
       - name: Record precise source identity
         run: |
-          mkdir -p artifacts
-          echo "COMMIT=${GITHUB_SHA}" | tee artifacts/source-identity.txt
-          sha256sum contracts/tender_lens.py | tee -a artifacts/source-identity.txt
+          mkdir -p proof-logs
+          echo "COMMIT=${GITHUB_SHA}" | tee proof-logs/source-identity.txt
+          sha256sum contracts/tender_lens.py | tee -a proof-logs/source-identity.txt
       - name: Real Studionet deploy, transaction consensus and RPC readback
         shell: bash
         run: |
           set -o pipefail
-          gltest tests/integration/test_studionet.py -v -s --network studionet 2>&1 | tee artifacts/studionet-proof.log
+          gltest tests/integration/test_studionet.py -v -s --network studionet 2>&1 | tee proof-logs/studionet-proof.log
       - name: Preserve full network proof logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tenderlens-studionet-proof-${{ github.run_id }}
-          path: artifacts/
+          path: proof-logs/
           if-no-files-found: warn
