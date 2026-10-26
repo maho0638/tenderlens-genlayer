@@ -1,0 +1,30 @@
+{
+  "project": "TenderLens",
+  "network": "studionet",
+  "observed_on": "2026-10-26",
+  "source_commit": "6036c7f1c5cc660a93a8ba0a7f31ed971ae51d2e",
+  "contract_source": "contracts/tender_lens.py",
+  "source_sha256": "fcf76c47d5d5970e2711a007b4e1d60809f16173cab19d5d74fd4a0e595458ed",
+  "github_actions_run": "https://github.com/maho0638/tenderlens-genlayer/actions/runs/40311855809",
+  "job_id": 121534714382,
+  "contract_address": "0x3c13B29B72C37c24a5B0CF44ff5dD1c01CF93e0D",
+  "explorer_url": "https://explorer-studio.genlayer.com/address/0x3c13B29B72C37c24a5B0CF44ff5dD1c01CF93e0D",
+  "owner_test_account": "0x9aC47a0B30a93ed15BB04AA2230844f2404aDD7A",
+  "bidder_test_account": "0xCeD240Ef039A38d48DD604B26B8246667286F910",
+  "transactions": {
+    "tender_created": "0x345ecf59831bd62d495440693177530c3e4fbe848d5020de0bac1263303bc28e",
+    "bid_submitted": "0x319e4b5073dd46cd833410f6d63707af21992f49d2a93c8ef68d466409e4e194",
+    "initial_consensus_review": "0x66306c7632dd114fb1fdb1e24ca1edd4d55bf0ca4cdc3b92635c8cd104fab5de",
+    "appeal_filed": "0x09c9f58827f1058f66d860e077b566f814e43106d75462a1c19fcce6a1ea6cbf",
+    "appeal_consensus_review": "0xeeb55953e17b882b9677136ae34fbc8b085e6cf607e6dea31eec735f2b2ce25b"
+  },
+  "direct_mode_tests_passed": 52,
+  "studionet_integration_tests_passed": 1,
+  "initial_observed_verdict": "UNDETERMINED",
+  "appeal_observed_verdict": "UNDETERMINED",
+  "rpc_readback_verified": true,
+  "original_decision_remained_immutable": true,
+  "source_commit_sha_matches_execution": true,
+  "proof_scope": "A real hosted Studionet run with test accounts and Gltest transaction-success assertions, two non-deterministic consensus-backed write calls and RPC state readback. Does not prove security, content truth, formal validity, external audit or mainnet readiness.",
+  "caveat": "GitHub Actions logs are the primary record; the artifact upload had no files in this run because gltest cleared the artifacts directory before test execution."
+}
