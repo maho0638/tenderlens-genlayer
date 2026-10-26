@@ -20,3 +20,10 @@
 - Economic security or production readiness; this contract never moves funds.
 
 This technical evidence applies to the stated test scope only. No claim of 100% security is made.
+
+## Expanded regression test and network verification (26 October 2026)
+
+- Expanded official GenLayer Direct Mode tests: **52/52 PASS**, with 8 invalid-identifier cases, boundary controls, unauthorized actions, replay and double-appeal attempts, hashes, and leader/validator class disagreement.
+- Green verification run: https://github.com/maho0638/tenderlens-genlayer/actions/runs/40311400265
+- Studionet integration script exercises a test deployment, two independent signers, five state-changing calls, two consensus-backed decisions, hash integrity, and RPC readback. Test results are **not established** until the separate network workflow completes successfully.
+- This network test uses the hosted TEST chain and testing-suite accounts, no production currency or user wallet. No security audit or formal verification is implied.
