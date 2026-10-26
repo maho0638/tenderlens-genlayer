@@ -13,6 +13,10 @@ from genlayer import *
 LABELS = ("MEETS", "DOES_NOT_MEET", "UNDETERMINED")
 
 
+def as_address(value):
+    return value if isinstance(value, Address) else Address(value)
+
+
 def checked_id(value: str) -> str:
     alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
     if (not isinstance(value, str) or not 1 <= len(value) <= 48
@@ -136,7 +140,7 @@ class TenderLens(gl.Contract):
         if tid in self.tenders:
             raise gl.vm.UserError("Tender already exists")
         self.tenders[tid] = Tender(
-            owner=Address(gl.message.sender_address), title=name,
+            owner=as_address(gl.message.sender_address), title=name,
             rubric=rules, rubric_sha256=digest(rules),
         )
 
@@ -151,7 +155,7 @@ class TenderLens(gl.Contract):
         if bid_key in self.bids:
             raise gl.vm.UserError("Bid already exists")
         self.bids[bid_key] = Bid(
-            bidder=Address(gl.message.sender_address), tender_id=tid,
+            bidder=as_address(gl.message.sender_address), tender_id=tid,
             proposal=proposal_text, evidence=evidence_text,
             evidence_sha256=digest(evidence_text), evaluated=False,
             appeal_filed=False, appeal_evidence="", appeal_sha256="",
@@ -165,7 +169,7 @@ class TenderLens(gl.Contract):
             raise gl.vm.UserError("Bid not found")
         bid = self.bids[key]
         tender = self.tenders[bid.tender_id]
-        if Address(gl.message.sender_address) != tender.owner:
+        if as_address(gl.message.sender_address) != tender.owner:
             raise gl.vm.UserError("Only tender owner may evaluate")
         if bid.evaluated:
             raise gl.vm.UserError("Bid already evaluated")
@@ -186,7 +190,7 @@ class TenderLens(gl.Contract):
         if key not in self.bids:
             raise gl.vm.UserError("Bid not found")
         bid = self.bids[key]
-        if Address(gl.message.sender_address) != bid.bidder:
+        if as_address(gl.message.sender_address) != bid.bidder:
             raise gl.vm.UserError("Only bidder may appeal")
         if not bid.evaluated:
             raise gl.vm.UserError("Bid has no decision")
@@ -204,7 +208,7 @@ class TenderLens(gl.Contract):
             raise gl.vm.UserError("Bid not found")
         bid = self.bids[key]
         tender = self.tenders[bid.tender_id]
-        if Address(gl.message.sender_address) != tender.owner:
+        if as_address(gl.message.sender_address) != tender.owner:
             raise gl.vm.UserError("Only tender owner may resolve appeal")
         if not bid.appeal_filed:
             raise gl.vm.UserError("Appeal not filed")
